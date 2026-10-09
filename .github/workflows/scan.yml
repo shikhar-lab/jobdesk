@@ -1,8 +1,8 @@
 name: scan-jobs
 on:
   schedule:
-    - cron: "*/10 * * * *"
-  workflow_dispatch:
+    - cron: "*/10 * * * *"   # every 10 minutes (GitHub may delay it a little)
+  workflow_dispatch:          # lets you press "Run workflow" by hand
 permissions:
   contents: write
 jobs:
@@ -13,14 +13,17 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - uses: actions/cache@v4
+      - uses: actions/cache@v4        # keeps the database between runs
         with:
           path: data
           key: jobs-db-${{ github.run_id }}
           restore-keys: jobs-db-
       - run: node bot.js --once && node export.js
-      - run: mkdir upload && cp public/jobs.json upload/
-      - uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        env:
+          ADZUNA_ID: ${{ secrets.ADZUNA_ID }}
+          ADZUNA_KEY: ${{ secrets.ADZUNA_KEY }}
+      - run: mkdir upload && cp public/jobs.json upload/    # upload only jobs.json, nothing else
+      - uses: SamKirkland/FTP-Deploy-Action@v4.3.5          # sends jobs.json to your website by FTP
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
