@@ -1,51 +1,46 @@
 <!DOCTYPE html>
-<html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#ff9a3c"><meta name="color-scheme" content="light">
-<title>JobDesk: Latest Jobs in Tech, Remote, India and Fresher Roles</title>
-<meta name="description" content="Search fresh jobs collected from top company career pages. Filter by skill, level, location or remote and apply on the original site.">
-<meta property="og:title" content="JobDesk: Latest Jobs"><meta property="og:description" content="Fresh openings from top companies, updated every few minutes.">
-<link rel="manifest" href="manifest.json"><link rel="icon" href="icon.svg" type="image/svg+xml">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#ff9a3c">
+<title>Latest Jobs Today: Remote, India, Tech and Fresher Openings</title>
+<meta name="description" content="Fresh job openings from top company career pages, checked every few minutes. Filter by role, location or fresher level and apply on the original site.">
+<meta property="og:title" content="Latest Jobs Today">
+<meta property="og:description" content="Fresh openings from top companies, updated all day. Search, filter and apply.">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="style.css">
-</head><body>
-<header class="nav"><div class="wrap navin">
-  <a class="logo" href="./"><span class="dot"></span>JobDesk</a>
-  <nav><a href="#results">Jobs</a><a href="#companies">Companies</a></nav>
-  <button id="savedBtn" class="ghost" aria-pressed="false">♥ Saved <b id="sc">0</b></button>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="bar">
+    <h1 class="logo">JobDesk</h1>
+    <input id="q" class="search" type="search" placeholder="Search job, company or city" aria-label="Search jobs">
+  </div>
+  <nav id="tabs" aria-label="Job categories"></nav>
 </div></header>
-<section class="hero"><div class="wrap">
-  <h1>Find your next job</h1>
-  <p id="sub" class="subt">Loading jobs...</p>
-  <form id="sf" class="sbox" role="search">
-    <input id="q" placeholder="Skills, designation or company" aria-label="Skills, designation or company">
-    <select id="lvl" aria-label="Experience level"><option value="">Any experience</option><option value="fresher">Fresher / Intern</option><option value="mid">Mid level</option><option value="senior">Senior / Lead</option></select>
-    <input id="loc" placeholder="Location (try: India)" aria-label="Location">
-    <button type="submit" class="go">Search</button>
-  </form>
-  <div id="chips" class="chips" role="group" aria-label="Quick filters"></div>
-</div></section>
-<div id="demo" class="wrap" hidden>Demo mode: jobs.json was not found, so these are sample jobs.</div>
-<div class="ticker" aria-label="Latest jobs"><b>Just in</b><div class="tw"><div id="tk" class="tt"></div></div></div>
 <main class="wrap">
-  <section id="companies"><h2>Top companies hiring now</h2><div id="co" class="cos"></div></section>
-  <section id="results" class="res">
-    <aside class="side">
-      <h3>Filters</h3>
-      <label class="ck"><input type="checkbox" id="remote"> Remote only</label>
-      <label class="ck"><input type="checkbox" id="fresh"> Added in last 24 hours</label>
-      <label class="fl">Source <select id="src"><option value="">All sources</option></select></label>
-      <div id="cosel"></div>
-      <button id="clear" class="ghost" hidden>Clear all filters</button>
-    </aside>
-    <div>
-      <div class="rh"><h2 id="rt">Jobs</h2><select id="sort" aria-label="Sort jobs"><option value="new">Latest first</option><option value="az">Company A to Z</option></select></div>
-      <div id="list" aria-live="polite"></div>
-      <button id="more" hidden>Show more jobs</button>
-    </div>
+  <div id="demo" hidden>Demo mode: jobs.json was not found, so these are sample jobs.</div>
+  <section class="intro">
+    <h2>New jobs, collected for you</h2>
+    <p>Our bot checks company career pages all day and posts every new opening here. Pick a category, narrow it with the filters, then press Apply to open the original job post.</p>
+    <p id="status" class="mute"></p>
+  </section>
+  <div class="filters">
+    <label>Location <select id="loc"><option value="">All locations</option><option value="remote">Remote</option><option value="india">India</option></select></label>
+    <label>Source <select id="src"><option value="">All sources</option></select></label>
+    <button id="clear" class="ghost" hidden>Clear filters</button>
+  </div>
+  <section id="boxes" class="boxes" aria-label="Job sections"></section>
+  <section>
+    <h2 id="lt">All jobs</h2>
+    <div id="list" aria-live="polite"></div>
+    <button id="more" hidden>Show more jobs</button>
   </section>
 </main>
-<footer class="wrap">Jobs are collected from Greenhouse, Lever, <a href="https://remotive.com" target="_blank" rel="noopener noreferrer">Remotive</a>, <a href="https://remoteok.com" target="_blank" rel="noopener noreferrer">RemoteOK</a> and <a href="https://www.arbeitnow.com" target="_blank" rel="noopener noreferrer">Arbeitnow</a>. Press Apply to open the original post. Never pay money to get a job.</footer>
+<footer class="wrap">Jobs are collected from Greenhouse, Lever, <a href="https://remotive.com" target="_blank" rel="noopener noreferrer">Remotive</a>, <a href="https://remoteok.com" target="_blank" rel="noopener noreferrer">RemoteOK</a> <a href="https://www.arbeitnow.com" target="_blank" rel="noopener noreferrer">Arbeitnow</a> and Indian jobs by <a href="https://www.adzuna.in" target="_blank" rel="noopener noreferrer">Adzuna</a>. Titles in other languages are translated to English. Always check the company site before sharing personal details.</footer>
 <script src="app.js"></script>
-<script>if("serviceWorker" in navigator&&location.protocol.indexOf("http")===0)navigator.serviceWorker.register("sw.js");</script>
-</body></html>
+<script>if ("serviceWorker" in navigator && location.protocol.indexOf("http") === 0) navigator.serviceWorker.register("sw.js");</script>
+</body>
+</html>
