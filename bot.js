@@ -4,8 +4,8 @@
 const db = require("./db");
 
 // ---- EDIT THIS PART ----
-const GREENHOUSE = ["stripe", "airbnb", "discord", "cloudflare", "figma"]; // names from boards.greenhouse.io/NAME
-const LEVER = ["palantir", "spotify"];                                      // names from jobs.lever.co/NAME
+const GREENHOUSE = ["stripe", "airbnb", "discord", "cloudflare", "figma", "postman", "razorpaysoftwareprivatelimited", "groww", "browserstack"]; // names from boards.greenhouse.io/NAME
+const LEVER = ["palantir", "spotify", "cred", "meesho", "paytm", "upgrad"];                                      // names from jobs.lever.co/NAME
 const COMPANY_SCAN_SECONDS = 60;   // company boards are checked this often
 const BOARD_SCAN_MINUTES = 30;     // big job boards are checked this often (faster gets you blocked)
 // ------------------------
@@ -42,6 +42,19 @@ SOURCES.push(
     load: async () => (await getJSON("https://www.arbeitnow.com/api/job-board-api")).data
       .map(j => ({ id: "an" + j.slug, title: j.title, company: j.company_name, location: j.location, url: j.url, posted: j.created_at })) }
 );
+
+// Adzuna India (official free API). Needs ADZUNA_ID and ADZUNA_KEY secrets. Runs every 4 hours to stay inside the free limit.
+if (process.env.ADZUNA_ID && process.env.ADZUNA_KEY) SOURCES.push({
+  key: "Adzuna India", source: "Adzuna", every: 4 * 3600 * 1000,
+  load: async () => {
+    const out = [];
+    for (const p of [1, 2]) {
+      const d = await getJSON("https://api.adzuna.com/v1/api/jobs/in/search/" + p + "?app_id=" + process.env.ADZUNA_ID + "&app_key=" + process.env.ADZUNA_KEY + "&results_per_page=50&sort_by=date");
+      for (const j of d.results || []) out.push({ id: "az" + j.id, title: String(j.title || "").replace(/<[^>]+>/g, ""), company: (j.company || {}).display_name || "Company not stated", location: (j.location || {}).display_name, url: j.redirect_url, posted: j.created });
+    }
+    return out;
+  }
+});
 
 // Free translation (MyMemory). If it fails or the daily free limit is over, the original title is kept.
 const needsEnglish = t => /[^\x00-\x7F\u2010-\u2015\u2018-\u201F\u00A0\u2026\u00B7\u2022]/.test(t) || /\((m|w|f|d)\/(m|w|f|d)(\/(m|w|f|d))?\)/i.test(t);
@@ -86,7 +99,12 @@ module.exports = { start };
 if (require.main === module) {
   if (process.argv.includes("--once")) {
     (async () => {
-      for (const s of SOURCES) await scan(s);
+      const rep = db.scanReport();
+      for (const s of SOURCES) {
+        const r = rep.find(x => x.source === s.key);
+        if (r && Date.now() - r.last < s.every - 60000) continue; // not due yet: keeps big boards and Adzuna inside their free limits
+        await scan(s);
+      }
       log("Done. Jobs in database: " + db.listJobs().total);
       process.exit(0);
     })();
