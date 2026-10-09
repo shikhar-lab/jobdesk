@@ -1,0 +1,9 @@
+{
+  "name": "Latest Jobs",
+  "short_name": "Jobs",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fff5ea",
+  "theme_color": "#ff9a3c",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

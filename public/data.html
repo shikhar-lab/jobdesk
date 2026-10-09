@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex"><title>Bot data</title><link rel="stylesheet" href="style.css">
+<style>table{width:100%;border-collapse:collapse;background:#fff;font-size:14px}th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left}th{background:var(--soft)}.w{overflow-x:auto}.k{display:flex;gap:12px;flex-wrap:wrap;margin:14px 0}.k div{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 18px}.k b{font-size:24px;display:block}input{padding:10px;border:1px solid var(--line);border-radius:8px;width:100%;max-width:360px;font:inherit}</style></head>
+<body><main class="wrap"><h2><a href="./">JobDesk</a> / Bot data</h2>
+<p class="sub">This page shows what the bot has saved in jobs.json.</p>
+<div class="k"><div><b id="n">0</b>jobs saved</div><div><b id="c">0</b>companies</div><div><b id="u">-</b>last bot update</div></div>
+<h3>Jobs per source</h3><div class="w"><table id="s"></table></div>
+<h3 style="margin-top:20px">All saved jobs</h3>
+<p><input id="f" placeholder="Search the data"> <button id="dl" class="ghost">Download CSV</button></p>
+<div class="w"><table id="t"></table></div></main>
+<script>
+var J=[],$=function(i){return document.getElementById(i)};
+function e(x){return String(x==null?"":x).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function draw(){var q=$("f").value.toLowerCase(),r=J.filter(function(j){return!q||(j.title+" "+j.company+" "+j.location+" "+j.source).toLowerCase().indexOf(q)>-1});
+$("t").innerHTML="<tr><th>Title</th><th>Company</th><th>Location</th><th>Source</th><th>Link</th></tr>"+r.slice(0,300).map(function(j){return"<tr><td>"+e(j.title)+"</td><td>"+e(j.company)+"</td><td>"+e(j.location)+"</td><td>"+e(j.source)+'</td><td><a href="'+e(j.url)+'" target="_blank" rel="noopener noreferrer">Open</a></td></tr>'}).join("")+(r.length>300?"<tr><td colspan=5>Showing 300 of "+r.length+". Search to narrow down.</td></tr>":"")}
+fetch("jobs.json",{cache:"no-store"}).then(function(r){return r.json()}).then(function(d){J=d.jobs||[];var s={},c={};J.forEach(function(j){s[j.source]=(s[j.source]||0)+1;c[j.company]=1});
+$("n").textContent=J.length;$("c").textContent=Object.keys(c).length;$("u").textContent=d.lastScan?new Date(d.lastScan).toLocaleString():"-";
+$("s").innerHTML="<tr><th>Source</th><th>Jobs</th></tr>"+Object.keys(s).sort(function(a,b){return s[b]-s[a]}).map(function(k){return"<tr><td>"+e(k)+"</td><td>"+s[k]+"</td></tr>"}).join("");draw()}).catch(function(){$("t").innerHTML="<tr><td>jobs.json not found.</td></tr>"});
+$("f").oninput=draw;
+$("dl").onclick=function(){var q=function(x){return'"'+String(x==null?"":x).replace(/"/g,'""')+'"'};var t=["title,company,location,source,url"].concat(J.map(function(j){return[j.title,j.company,j.location,j.source,j.url].map(q).join(",")})).join("\n");var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([t],{type:"text/csv"}));a.download="jobs.csv";a.click()};
+</script></body></html>
