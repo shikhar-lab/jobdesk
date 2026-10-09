@@ -1,0 +1,12 @@
+{
+  "name": "jobbot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Job bot + website: collects jobs from many sites and shows them on one page",
+  "scripts": {
+    "start": "node server.js",
+    "scan": "node bot.js --once",
+    "test": "node test-db.js"
+  },
+  "engines": { "node": ">=22.13" }
+}
